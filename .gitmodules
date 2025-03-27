@@ -1,0 +1,3 @@
+[submodule "qube_driver"]
+	path = qube_driver
+	url = https://github.com/adamleon/qube_driver.git
