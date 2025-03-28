@@ -2,7 +2,7 @@
 <robot name="quanser_qube" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:arg name="baud_rate" default="115200"/>
-  <xacro:arg name="device" default="/dev/ttyUSB0"/> <!-- Double check what the default for device should be -->
+  <xacro:arg name="device" default="/dev/ttyUSB0"/>
   <xacro:arg name="simulation" default="false"/>
 
   <xacro:include filename="$(find qube_description)/urdf/qube.macro.xacro" />
@@ -14,7 +14,7 @@
 
   <joint name="world_to_base_joint" type="fixed">
     <parent link="world"/>
-    <child link="base_link"/> <!-- Adjust this name if your qube base link has a different name -->
+    <child link="base_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
