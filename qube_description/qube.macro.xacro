@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+  <! variabel definisjoner -->
+  <xacro:property name = "qubeWidth" value = "0.5"/>
+  <xacro:property name="qubeLength" value="0.5"/>
+  <xacro:property name="qubeHeight" value="0.5"/>
+
+  <! farge variabler />
+  <xacro:property name="black" value="0 0 0 1"
+
+
+<xacro:macro name = "qube">
+  <link name = "black box">
+    <visual>
+      <geometry>
+        <box size = "${qubeWidth} ${qubeHeight} ${qubeLength}"/>
+      <geometry>
+      <material name="black"/>
+    </visual>
+
+
+
