@@ -4,8 +4,13 @@
   <name>qube_description</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="bvihle@stud.ntnu.no">zappa</maintainer>
+  <maintainer>TODO:</maintainer>
   <license>TODO: License declaration</license>
+
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
