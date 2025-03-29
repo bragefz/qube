@@ -8,7 +8,7 @@
   <xacro:property name="cylinderRadius" value="0.2"/>
   <xacro:property name="indicatorRadius" value="0.02"/>
   <xacro:property name="indicatorLength" value="0.15"/>
-  <xacro:property name="pi" value="3.1415926535897931"/>
+<!--  <xacro:property name="pi" value="3.1415926535897931"/>-->
 
   <!-- farge variabler -->
   <material name="black">
@@ -27,9 +27,7 @@
         <geometry>
           <box size ="${qubeWidth} ${qubeLength} ${qubeHeight}"/>
         </geometry>
-        <material name="black">
-          <color rgba="${black}"/>
-        </material>
+        <material name="black"/>
       </visual>
       <collision>
         <geometry>
@@ -43,9 +41,7 @@
         <geometry>
           <cylinder radius="${cylinderRadius}" length="${cylinderHeight}"/>
         </geometry>
-        <material name="red">
-          <color rgba="${red}"/>
-        </material>
+        <material name="red"/>
       </visual>
       <collision>
         <geometry>
@@ -59,9 +55,7 @@
         <geometry>
           <cylinder radius="${indicatorRadius}" length="${indicatorLength}"/>
         </geometry>
-        <material name="white">
-          <color rgba="${white}"/>
-        </material>
+        <material name="white"/>
       </visual>
       <collision>
         <geometry>
@@ -70,7 +64,7 @@
       </collision>
     </link>
 
-    <joint name="qube_to_disc" type="continuous">
+    <joint name="motor_joint" type="continuous">
       <parent link="base_link"/>
       <child link="redDisc"/>
       <origin xyz="0 0 ${qubeHeight/2 + cylinderHeight/2}" rpy="0 0 0"/>

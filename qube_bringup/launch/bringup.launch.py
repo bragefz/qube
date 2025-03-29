@@ -39,8 +39,6 @@ def generate_launch_description():
         "controlled_qube.urdf.xacro"
     )
 
-
-
     # Process the xacro file with parameters
     mappings = {
         'baud_rate': LaunchConfiguration('baud_rate'),
