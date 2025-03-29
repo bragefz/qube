@@ -15,7 +15,7 @@
   <xacro:property name="red" value="1 0 0 1"/>
 
 
-  <xacro:macro name = "qube">
+  <xacro:macro name = "qube" params="prefix parent">
     <link name = "base_link">
       <visual>
         <geometry>

@@ -2,11 +2,12 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, Command
 from launch.actions import DeclareLaunchArgument
 from ament_index_python.packages import get_package_share_directory
 import os
 import xacro
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -23,7 +24,7 @@ def generate_launch_description():
 
     simulation_arg = DeclareLaunchArgument(
         'simulation', default_value='False',
-        description='Set whether the program should control real (False) or simulated hardware (True)'
+        description='Set whether the program should control simulated hardware (True) or real hardware (False)'
     )
 
     qube_driver_launch = os.path.join(
@@ -32,11 +33,13 @@ def generate_launch_description():
         'qube_driver.launch.py'
     )
 
-    xacro_file = os.path.join(
-        get_package_share_directory("joint_description"),
+    controlled_cube_xacro = os.path.join(
+        get_package_share_directory('qube_bringup'),
         "urdf",
         "controlled_qube.urdf.xacro"
     )
+
+
 
     # Process the xacro file with parameters
     mappings = {
@@ -44,9 +47,20 @@ def generate_launch_description():
         'device': LaunchConfiguration('device'),
         'simulation': LaunchConfiguration('simulation')
     }
-    robot_description_content = xacro.process_file(xacro_file, mappings=mappings).toxml()
 
-    # Define the qube_driver launch include
+    robot_description_content = Command([
+        'xacro ', controlled_cube_xacro,
+        ' baud_rate:=', mappings['baud_rate'],
+        ' device:=', mappings['device'],
+        ' simulation:=', mappings['simulation']
+    ])
+
+    robot_description = {'robot_description': ParameterValue(
+        robot_description_content,
+        value_type=str
+    )}
+
+    #Define the qube_driver launch include
     qube_driver_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(qube_driver_launch),
         launch_arguments=mappings.items()
@@ -62,23 +76,19 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_description_content}]
+        parameters=[robot_description]
+        # parameters = [{'robot_description': ParameterValue(robot_description_content, value_type=str)}]
     )
-
-    args = [
-        baud_rate_arg,
-        device_arg,
-        simulation_arg
-    ]
-
-    nodes_to_start = [
-        qube_driver_include,
-        rviz_node,
-        robot_state_publisher_node
-    ]
 
 
     return LaunchDescription([
-        *args,
-        *nodes_to_start
+        # Args
+        baud_rate_arg,
+        device_arg,
+        simulation_arg,
+        # Launch file from qube driver
+        qube_driver_include,
+        # Nodes
+        rviz_node,
+        robot_state_publisher_node
     ])
