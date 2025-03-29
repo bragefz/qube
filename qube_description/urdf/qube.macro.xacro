@@ -1,28 +1,34 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- variabel definisjoner -->
-  <xacro:property name = "qubeWidth" value = "0.5"/>
+  <xacro:property name="qubeWidth" value="0.5"/>
   <xacro:property name="qubeLength" value="0.5"/>
   <xacro:property name="qubeHeight" value="0.5"/>
-  <xacro:property name="cylinderHeight" value="0.3"/>
-  <xacro:property name="cylinderRadius" value="0.5"/>
-  <xacro:property name="indicatorRadius" value="0.05"/>
-  <xacro:property name="indicatorLength" value="0.4"/>
+  <xacro:property name="cylinderHeight" value="0.1"/>
+  <xacro:property name="cylinderRadius" value="0.2"/>
+  <xacro:property name="indicatorRadius" value="0.02"/>
+  <xacro:property name="indicatorLength" value="0.15"/>
+  <xacro:property name="pi" value="3.1415926535897931"/>
 
   <!-- farge variabler -->
-  <xacro:property name="black" value="0 0 0 1"/>
-  <xacro:property name="white" value="1 1 1 1"/>
-  <xacro:property name="red" value="1 0 0 1"/>
-
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
 
   <xacro:macro name = "qube" params="prefix parent">
     <link name = "base_link">
       <visual>
         <geometry>
-          <box size = "${qubeWidth} ${qubeLength} ${qubeHeight}"/>
+          <box size ="${qubeWidth} ${qubeLength} ${qubeHeight}"/>
         </geometry>
         <material name="black">
-          <color rgba = "${black}"/>
+          <color rgba="${black}"/>
         </material>
       </visual>
       <collision>
@@ -35,15 +41,15 @@
     <link name="redDisc">
       <visual>
         <geometry>
-          <cylinder radius = "${cylinderRadius}" length = "${cylinderHeight}"/>
+          <cylinder radius="${cylinderRadius}" length="${cylinderHeight}"/>
         </geometry>
         <material name="red">
-          <color rgba = "${red}"/>
+          <color rgba="${red}"/>
         </material>
       </visual>
       <collision>
         <geometry>
-          <cylinder radius = "${cylinderRadius}" length = "${cylinderHeight}"/>
+          <cylinder radius="${cylinderRadius}" length="${cylinderHeight}"/>
         </geometry>
       </collision>
     </link>
@@ -54,7 +60,7 @@
           <cylinder radius="${indicatorRadius}" length="${indicatorLength}"/>
         </geometry>
         <material name="white">
-          <color rgba = "${white}"/>
+          <color rgba="${white}"/>
         </material>
       </visual>
       <collision>
@@ -64,7 +70,7 @@
       </collision>
     </link>
 
-    <joint name="qube_to_disc" type = "continuous">
+    <joint name="qube_to_disc" type="continuous">
       <parent link="base_link"/>
       <child link="redDisc"/>
       <origin xyz="0 0 ${qubeHeight/2 + cylinderHeight/2}" rpy="0 0 0"/>
@@ -74,7 +80,7 @@
     <joint name="disc_to_indicator" type="fixed">
       <parent link="redDisc"/>
       <child link="whiteIndicator"/>
-      <origin xyz="${cylinderRadius/2} 0 0" rpy="${pi/2} 0 0"/>
+      <origin xyz="${cylinderRadius*0.7} 0 ${cylinderHeight/2}" rpy="${pi/2} 0 0"/>
     </joint>
   </xacro:macro>
 </robot>
