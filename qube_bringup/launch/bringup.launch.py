@@ -92,7 +92,7 @@ def generate_launch_description():
         output='screen',
         parameters=[robot_description]
         # parameters = [{'robot_description': ParameterValue(robot_description_content, value_type=str)}]
-    ),
+    )
 
     # qube_controller_node = Node(
     #     package='qube_controller',
