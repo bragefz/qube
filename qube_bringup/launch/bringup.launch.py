@@ -11,7 +11,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
-    # Declare launch arguments with default values
+    # Declare arguments for robot description and control xacro files
     baud_rate_arg = DeclareLaunchArgument(
         'baud_rate', default_value='115200',
         description='Communication frequency'
@@ -25,6 +25,22 @@ def generate_launch_description():
     simulation_arg = DeclareLaunchArgument(
         'simulation', default_value='False',
         description='Set whether the program should control simulated hardware (True) or real hardware (False)'
+    )
+
+    # Declare arguments for the pid controller
+    kp_arg = DeclareLaunchArgument(
+        'kp', default_value='3.0',
+        description='Proportional gain'
+    )
+
+    ki_arg = DeclareLaunchArgument(
+        'ki', default_value='0.1',
+        description='Integral gain'
+    )
+
+    kd_arg = DeclareLaunchArgument(
+        'kd', default_value='0.2',
+        description='Derivative gain'
     )
 
     qube_driver_launch = os.path.join(
@@ -67,7 +83,7 @@ def generate_launch_description():
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
-        # arguments=['-d', os.path.join(get_package_share_directory("joint_description"), 'config', 'your_config.rviz')]
+        arguments=['-d', os.path.join(get_package_share_directory("qube_bringup"), 'config', 'qube_rviz_config.rviz')]
     )
 
     robot_state_publisher_node = Node(
@@ -76,7 +92,17 @@ def generate_launch_description():
         output='screen',
         parameters=[robot_description]
         # parameters = [{'robot_description': ParameterValue(robot_description_content, value_type=str)}]
-    )
+    ),
+
+    # qube_controller_node = Node(
+    #     package='qube_controller',
+    #     executable='pid_controller_node',
+    #     parameters=[{
+    #         'kp': LaunchConfiguration('kp'),
+    #         'ki': LaunchConfiguration('ki'),
+    #         'kd': LaunchConfiguration('kd'),
+    #     }]
+    # ),
 
 
     return LaunchDescription([
@@ -88,5 +114,6 @@ def generate_launch_description():
         qube_driver_include,
         # Nodes
         rviz_node,
-        robot_state_publisher_node
+        robot_state_publisher_node,
+        # qube_controller_node
     ])
