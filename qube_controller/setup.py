@@ -22,6 +22,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'qube_controller_node = qube_controller.qube_controller_node:main',
         ],
     },
 )

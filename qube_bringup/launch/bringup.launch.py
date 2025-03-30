@@ -43,6 +43,11 @@ def generate_launch_description():
         description='Derivative gain'
     )
 
+    setpoint_arg = DeclareLaunchArgument(
+        'setpoint', default_value='0.0',
+        description='Target position'
+    )
+
     qube_driver_launch = os.path.join(
         get_package_share_directory('qube_driver'),
         'launch',
@@ -92,28 +97,33 @@ def generate_launch_description():
         output='screen',
         parameters=[robot_description]
         # parameters = [{'robot_description': ParameterValue(robot_description_content, value_type=str)}]
-    ),
+    )
 
-    # qube_controller_node = Node(
-    #     package='qube_controller',
-    #     executable='pid_controller_node',
-    #     parameters=[{
-    #         'kp': LaunchConfiguration('kp'),
-    #         'ki': LaunchConfiguration('ki'),
-    #         'kd': LaunchConfiguration('kd'),
-    #     }]
-    # ),
-
+    qube_controller_node = Node(
+        package="qube_controller",
+        executable="qube_controller_node",
+        name="qube_controller_node",
+        parameters=[{
+            'kp': LaunchConfiguration('kp'),
+            'ki': LaunchConfiguration('ki'),
+            'kd': LaunchConfiguration('kd'),
+            'setpoint': LaunchConfiguration('setpoint'),
+        }]
+    )
 
     return LaunchDescription([
         # Args
         baud_rate_arg,
         device_arg,
         simulation_arg,
+        kp_arg,
+        ki_arg,
+        kd_arg,
+        setpoint_arg,
         # Launch file from qube driver
         qube_driver_include,
         # Nodes
         rviz_node,
         robot_state_publisher_node,
-        # qube_controller_node
+         qube_controller_node
     ])
