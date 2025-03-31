@@ -5,6 +5,7 @@ from rcl_interfaces.msg import SetParametersResult
 from std_msgs.msg import Float64MultiArray
 import numpy as np
 from time import time
+from rcl_interfaces.msg import ParameterDescriptor, FloatingPointRange
 
 
 class PIDController:
@@ -58,7 +59,12 @@ class QubeControllerNode(Node):
         self.declare_parameter('kp', 3.0)
         self.declare_parameter('ki', 0.1)
         self.declare_parameter('kd', 0.2)
-        self.declare_parameter('setpoint', 0.0)
+        self.declare_parameter('setpoint',
+                               0.0,
+                                   ParameterDescriptor(floating_point_range=[
+                                   FloatingPointRange(from_value=-3.14, to_value=3.14)
+                               ])
+        )
         # Callback to update parameters including setpoint
         self.add_on_set_parameters_callback(self.parameter_callback)
 

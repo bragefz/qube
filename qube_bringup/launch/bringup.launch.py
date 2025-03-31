@@ -99,6 +99,12 @@ def generate_launch_description():
         # parameters = [{'robot_description': ParameterValue(robot_description_content, value_type=str)}]
     )
 
+    rqt_reconfigure_node = Node(
+        package='rqt_reconfigure',
+        executable='rqt_reconfigure',
+        name='rqt_reconfigure',
+    )
+
     qube_controller_node = Node(
         package="qube_controller",
         executable="qube_controller_node",
@@ -125,5 +131,6 @@ def generate_launch_description():
         # Nodes
         rviz_node,
         robot_state_publisher_node,
-         qube_controller_node
+        qube_controller_node,
+        rqt_reconfigure_node
     ])

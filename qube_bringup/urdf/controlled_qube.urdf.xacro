@@ -10,7 +10,7 @@
 
   <link name="world"/>
 
-  <xacro:qube prefix="" parent="world" />
+  <xacro:qube prefix="" parent="world"/>
 
   <joint name="world_to_base_joint" type="fixed">
     <parent link="world"/>
