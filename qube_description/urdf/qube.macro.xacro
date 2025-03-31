@@ -45,7 +45,7 @@
         <origin xyz="0 0 0" rpy="0.001 0.001 0"/>
         <geometry>
           <cylinder radius="${cylinderRadius}" length="${cylinderHeight}">
-            <resolution>50</resolution>
+            <!--<resolution>50</resolution>-->
           </cylinder>
         </geometry>
         <material name="red"/>
@@ -97,14 +97,14 @@
     <joint name="disc_to_indicator" type="fixed">
       <parent link="redDisc"/>
       <child link="whiteIndicator"/>
-      <origin xyz="0 0 ${cylinderHeight/2}" rpy="${pi/2} 0 0"/>
+      <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 0"/>
     </joint>
 
 
     <joint name="sIndicator2disc" type="fixed">
       <parent link="redDisc"/>
       <child link="sIndicator"/>
-       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${pi/2} 0 ${pi/2}"/>
+       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 ${3/2}"/>
     </joint>
 
   </xacro:macro>
