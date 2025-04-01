@@ -16,28 +16,32 @@ class PIDController:
         self.setpoint = setpoint
 
         self.prev_error = 0.0
+        self.prev_measurement = 0.0
         self.integral = 0.0
         self.prev_time = time()
 
-    def calculate_command(self, current_value):
+    def calculate_command(self, current_position):
         """Compute the control signal based on the current value"""
         current_time = time()
         dt = current_time - self.prev_time
         dt = max(dt, 0.001)  # Avoid division by zero
 
-        error = self.setpoint - current_value
+        error = self.setpoint - current_position
 
         p_term = self.kp * error
 
         self.integral += error * dt
         i_term = self.ki * self.integral
 
-        derivative = (error - self.prev_error) / dt
+        # derivative = (error - self.prev_error) / dt
+        # d_term = self.kd * derivative
+        derivative = -(current_position - self.prev_measurement) / dt
         d_term = self.kd * derivative
 
         output = p_term + i_term + d_term
 
         self.prev_error = error
+        self.prev_measurement = current_position
         self.prev_time = current_time
 
         return output
@@ -46,9 +50,11 @@ class PIDController:
         self.setpoint = setpoint
 
     def reset(self):
-        self.prev_error = 0.0
         self.integral = 0.0
+        self.prev_error = 0.0
+        self.prev_measurement = 0.0
         self.prev_time = time()
+
 
 
 class QubeControllerNode(Node):
@@ -58,7 +64,7 @@ class QubeControllerNode(Node):
         # Declare PID parameters
         self.declare_parameter('kp', 3.0)
         self.declare_parameter('ki', 0.1)
-        self.declare_parameter('kd', 0.2)
+        self.declare_parameter('kd', 0.1)
         self.declare_parameter('setpoint',
                                0.0,
                                    ParameterDescriptor(floating_point_range=[
