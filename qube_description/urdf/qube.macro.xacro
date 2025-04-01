@@ -4,11 +4,17 @@
   <xacro:property name="qubeWidth" value="0.5"/>
   <xacro:property name="qubeLength" value="0.5"/>
   <xacro:property name="qubeHeight" value="0.5"/>
-  <xacro:property name="cylinderHeight" value="0.1"/>
-  <xacro:property name="cylinderRadius" value="0.2"/>
-  <xacro:property name="indicatorRadius" value="0.02"/>
-  <xacro:property name="indicatorLength" value="0.15"/>
-<!--  <xacro:property name="pi" value="3.1415926535897931"/>-->
+  <xacro:property name="cylinderHeight" value="0.04"/>
+  <xacro:property name="cylinderRadius" value="0.11"/>
+  <xacro:property name="indicatorWidth" value="0.005"/>
+  <xacro:property name="indicatorLength" value="0.22"/>
+  <xacro:property name="indicatorHeight" value="0.001"/>
+  <xacro:property name="sIndicatorL" value="0.11"/>
+  <xacro:property name="sIndicatorW" value="0.005"/>
+  <xacro:property name="sIndicatorH" value="0.001"/>
+  <xacro:property name="grayCylinderH" value="0.06"/>
+  <xacro:property name="grayCylinderR" value="0.05"/>
+  <!-- <xacro:property name="pi" value="3.1415926535897931"/> -->
 
   <!-- farge variabler -->
   <material name="black">
@@ -19,6 +25,9 @@
   </material>
   <material name="white">
     <color rgba="1 1 1 1"/>
+  </material>
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1"/>
   </material>
 
   <xacro:macro name = "qube" params="prefix parent">
@@ -38,8 +47,11 @@
 
     <link name="redDisc">
       <visual>
+        <origin xyz="0 0 0" rpy="0.001 0.001 0"/>
         <geometry>
-          <cylinder radius="${cylinderRadius}" length="${cylinderHeight}"/>
+          <cylinder radius="${cylinderRadius}" length="${cylinderHeight}">
+            <!--<resolution>50</resolution>-->
+          </cylinder>
         </geometry>
         <material name="red"/>
       </visual>
@@ -53,20 +65,52 @@
     <link name="whiteIndicator">
       <visual>
         <geometry>
-          <cylinder radius="${indicatorRadius}" length="${indicatorLength}"/>
+          <box size="${indicatorLength} ${indicatorHeight} ${indicatorWidth}"/>
         </geometry>
         <material name="white"/>
       </visual>
       <collision>
         <geometry>
-          <cylinder radius="${indicatorRadius}" length="${indicatorLength}"/>
+          <box size="${indicatorLength}  ${indicatorHeight} ${indicatorWidth}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="sIndicator">
+      <visual>
+        <origin xyz="${sIndicatorL/2} 0 0"/>
+        <geometry>
+          <box size="${sIndicatorL} ${sIndicatorH} ${sIndicatorW}"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+      <collision>
+        <origin xyz="${sIndicatorL/2} 0 0"/>
+        <geometry>
+          <box size="${sIndicatorL} ${sIndicatorH} ${sIndicatorW}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="grayDisc">
+      <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${grayCylinderH}" radius="${grayCylinderR}"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${grayCylinderH}" radius="${grayCylinderR}"/>
         </geometry>
       </collision>
     </link>
 
     <joint name="motor_joint" type="continuous">
       <parent link="base_link"/>
-      <child link="redDisc"/>
+      <child link="grayDisc"/>
       <origin xyz="0 0 ${qubeHeight/2 + cylinderHeight/2}" rpy="0 0 0"/>
       <axis xyz="0 0 1"/>
     </joint>
@@ -74,7 +118,20 @@
     <joint name="disc_to_indicator" type="fixed">
       <parent link="redDisc"/>
       <child link="whiteIndicator"/>
-      <origin xyz="${cylinderRadius*0.7} 0 ${cylinderHeight/2}" rpy="${pi/2} 0 0"/>
+      <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 0"/>
     </joint>
+
+    <joint name="sIndicator2disc" type="fixed">
+      <parent link="redDisc"/>
+      <child link="sIndicator"/>
+      <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 ${3/2}"/>
+    </joint>
+
+    <joint name="disc_to_disc" type="fixed">
+      <parent link="grayDisc"/>
+      <child link="redDisc"/>
+      <origin xyz="0 0 ${grayCylinderH/2}"/>
+    </joint>
+
   </xacro:macro>
 </robot>
