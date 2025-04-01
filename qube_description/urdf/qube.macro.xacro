@@ -12,6 +12,8 @@
   <xacro:property name="sIndicatorL" value="0.11"/>
   <xacro:property name="sIndicatorW" value="0.005"/>
   <xacro:property name="sIndicatorH" value="0.001"/>
+  <xacro:property name="grayCylinderH" value="0.06"/>
+  <xacro:property name="grayCylinderR" value="0.05"/>
   <!-- <xacro:property name="pi" value="3.1415926535897931"/> -->
 
   <!-- farge variabler -->
@@ -23,6 +25,9 @@
   </material>
   <material name="white">
     <color rgba="1 1 1 1"/>
+  </material>
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1"/>
   </material>
 
   <xacro:macro name = "qube" params="prefix parent">
@@ -87,9 +92,25 @@
       </collision>
     </link>
 
+    <link name="grayDisc">
+      <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${grayCylinderH}" radius="${grayCylinderR}"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${grayCylinderH}" radius="${grayCylinderR}"/>
+        </geometry>
+      </collision>
+    </link>
+
     <joint name="motor_joint" type="continuous">
       <parent link="base_link"/>
-      <child link="redDisc"/>
+      <child link="grayDisc"/>
       <origin xyz="0 0 ${qubeHeight/2 + cylinderHeight/2}" rpy="0 0 0"/>
       <axis xyz="0 0 1"/>
     </joint>
@@ -100,11 +121,16 @@
       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 0"/>
     </joint>
 
-
     <joint name="sIndicator2disc" type="fixed">
       <parent link="redDisc"/>
       <child link="sIndicator"/>
-       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 ${3/2}"/>
+      <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 ${3/2}"/>
+    </joint>
+
+    <joint name="disc_to_disc" type="fixed">
+      <parent link="grayDisc"/>
+      <child link="redDisc"/>
+      <origin xyz="0 0 ${grayCylinderH/2}"/>
     </joint>
 
   </xacro:macro>
