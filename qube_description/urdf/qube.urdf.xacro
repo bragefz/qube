@@ -1,11 +1,16 @@
 <?xml version="1.0"?>
 <robot name="quanser_qube" xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<!-- importerer qube makroen med å gi stien til qube.macro.xacro filen -->
 	<xacro:include filename="$(find qube_description)/urdf/qube.macro.xacro"/>
 
+  <!-- Lager linken "world"  -->
   <link name="world"/>
 
+  <!-- gjør "world" parent til macro filen -->
   <xacro:qube prefix="" parent="world"/>
 
+  <!-- kobler base_link til "world", resten av roboten er koblet til base_link (quben) -->
   <joint name="world_to_base_joint" type="fixed">
     <parent link="world"/>
     <child link="base_link"/>
