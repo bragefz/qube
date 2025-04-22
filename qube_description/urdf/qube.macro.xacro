@@ -14,10 +14,9 @@
   <xacro:property name="sIndicatorH" value="0.001"/>
   <xacro:property name="grayCylinderH" value="0.06"/>
   <xacro:property name="grayCylinderR" value="0.05"/>
-  <xacro:property name="redLineW" value="0.501"/>
-  <xacro:property name="redLineL" value="0.501"/>
-  <xacro:property name="redLineH" value="0.01"/>
-  <!-- <xacro:property name="pi" value="3.1415926535897931"/> -->
+  <xacro:property name="blueLineW" value="0.501"/>
+  <xacro:property name="blueLineL" value="0.501"/>
+  <xacro:property name="blueLineH" value="0.01"/>
 
   <!-- farge variabler -->
   <material name="black">
@@ -26,6 +25,9 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
   <material name="white">
     <color rgba="1 1 1 1"/>
   </material>
@@ -33,6 +35,7 @@
     <color rgba="0.5 0.5 0.5 1"/>
   </material>
 
+  <!-- Lager quben med bruk av variabler for lengde, bredde og høyde så koden er enklere å endre -->
   <xacro:macro name = "qube" params="prefix parent">
     <link name = "base_link">
       <visual>
@@ -48,12 +51,12 @@
       </collision>
     </link>
 
+    <!-- Lager den røde disken for quben ved å bruke sylinder variablene for å lage en lav sylinder med rød farge -->
     <link name="redDisc">
       <visual>
-        <origin xyz="0 0 0" rpy="0.001 0.001 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <cylinder radius="${cylinderRadius}" length="${cylinderHeight}">
-            <!--<resolution>50</resolution>-->
           </cylinder>
         </geometry>
         <material name="red"/>
@@ -65,6 +68,7 @@
       </collision>
     </link>
 
+    <!-- For å gjøre figuren likere den virkelige roboten så lagde vi viserene ved å lage små bokser med så lav høyde så det ser ut som at de er malt på disken -->
     <link name="whiteIndicator">
       <visual>
         <geometry>
@@ -79,6 +83,7 @@
       </collision>
     </link>
 
+    <!-- Her lagde vi den andre indikatoren med samme konsept som den forrige slik at roboten i simulatoren blir likere den virkelige roboten -->
     <link name="sIndicator">
       <visual>
         <origin xyz="${sIndicatorL/2} 0 0"/>
@@ -95,6 +100,7 @@
       </collision>
     </link>
 
+    <!-- Grå disk som kobler den røde disken til quben for mer detalje av den virkelige roboten -->
     <link name="grayDisc">
       <visual>
         <origin xyz="0 0 0"/>
@@ -111,22 +117,24 @@
       </collision>
     </link>
 
-    <link name="redLine">
+    <!-- For å legge til mer detalje for at roboten skal ligne mer på den virkelige lager vi en tynn boks som har så vidt høyere bredde og lengde verdi enn quben så den blir synlig -->
+    <link name="blueLine">
       <visual>
         <origin xyz="0 0 0"/>
         <geometry>
-          <box size="${redLineW} ${redLineL} ${redLineH}"/>
+          <box size="${blueLineW} ${blueLineL} ${blueLineH}"/>
         </geometry>
-        <material name="red"/>
+        <material name="blue"/>
       </visual>
       <collision>
         <origin xyz="0 0 0"/>
         <geometry>
-          <box size="${redLineW} ${redLineL} ${redLineH}"/>
+          <box size="${blueLineW} ${blueLineL} ${blueLineH}"/>
         </geometry>
       </collision>
     </link>
 
+    <!-- kobler sammen quben "base_link" sammen med den grå disken "grayDisc" -->
     <joint name="motor_joint" type="continuous">
       <parent link="base_link"/>
       <child link="grayDisc"/>
@@ -134,27 +142,31 @@
       <axis xyz="0 0 1"/>
     </joint>
 
+    <!-- kobler sammen de hvite indikatorene til den røde disken og bruker "fixed" så de er festet til hverandre og beholder samme stilling uansett om disken beveger seg -->
     <joint name="disc_to_indicator" type="fixed">
       <parent link="redDisc"/>
       <child link="whiteIndicator"/>
       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 0"/>
     </joint>
 
+    <!-- kobler til indikator nummer 2 på samme måte som den første -->
     <joint name="sIndicator2disc" type="fixed">
       <parent link="redDisc"/>
       <child link="sIndicator"/>
       <origin xyz="0 0 ${cylinderHeight/2}" rpy="${3/2} 0 ${3/2}"/>
     </joint>
 
+    <!-- kobler sammen den grå disken til den røde, og siden det er den grå disken som beveger seg vil resten bare følge og vi kan bruke "fixed" -->
     <joint name="disc_to_disc" type="fixed">
       <parent link="grayDisc"/>
       <child link="redDisc"/>
       <origin xyz="0 0 ${grayCylinderH/2}"/>
     </joint>
 
-    <joint name="redLineToBox" type="fixed">
+    <!-- kobler den blå boksen inn til quben så den ligger så vidt under og toppen av quben forblir svart -->
+    <joint name="blueLineToBox" type="fixed">
       <parent link="base_link"/>
-      <child link="redLine"/>
+      <child link="blueLine"/>
        <origin xyz="0 0 ${qubeHeight/2 - 0.01}"/>
     </joint>
 
