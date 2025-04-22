@@ -3,7 +3,6 @@ from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from rcl_interfaces.msg import SetParametersResult
 from std_msgs.msg import Float64MultiArray
-import numpy as np
 from time import time
 from rcl_interfaces.msg import ParameterDescriptor, FloatingPointRange
 
@@ -13,7 +12,7 @@ class PIDController:
         self.kp = kp
         self.ki = ki
         self.kd = kd
-        self.setpoint = setpoint
+        self.setpoint = setpoint 
 
         self.prev_error = 0.0
         self.prev_measurement = 0.0
@@ -21,7 +20,7 @@ class PIDController:
         self.prev_time = time()
 
     def calculate_command(self, current_position):
-        """Compute the control signal based on the current value"""
+        # Calculate command using pid with derivative on measurement
         current_time = time()
         dt = current_time - self.prev_time
         dt = max(dt, 0.001)  # Avoid division by zero
@@ -33,9 +32,9 @@ class PIDController:
         self.integral += error * dt
         i_term = self.ki * self.integral
 
-        # derivative = (error - self.prev_error) / dt
+        # derivative = (error - self.prev_error) / dt # Derivative on error, less smooth
         # d_term = self.kd * derivative
-        derivative = -(current_position - self.prev_measurement) / dt
+        derivative = -(current_position - self.prev_measurement) / dt # Derivative on measurement to avoid derivative kick
         d_term = self.kd * derivative
 
         output = p_term + i_term + d_term
@@ -47,28 +46,20 @@ class PIDController:
         return output
 
     def set_target(self, setpoint):
-        self.setpoint = setpoint
-
-    def reset(self):
-        self.integral = 0.0
-        self.prev_error = 0.0
-        self.prev_measurement = 0.0
-        self.prev_time = time()
-
-
+        self.setpoint = -setpoint # With inversion positive increase is correctly counterclockwise spinning
+        
 
 class QubeControllerNode(Node):
     def __init__(self):
         super().__init__('qube_controller_node')
-
         # Declare PID parameters
-        self.declare_parameter('kp', 3.0)
-        self.declare_parameter('ki', 0.1)
-        self.declare_parameter('kd', 0.1)
+        self.declare_parameter('kp', 8.0)
+        self.declare_parameter('ki', 0.2)
+        self.declare_parameter('kd', 0.7)
         self.declare_parameter('setpoint',
                                0.0,
                                    ParameterDescriptor(floating_point_range=[
-                                   FloatingPointRange(from_value=-3.14, to_value=3.14)
+                                   FloatingPointRange(from_value=-3.14, to_value=3.14) # Set min and max angle
                                ])
         )
         # Callback to update parameters including setpoint
@@ -95,25 +86,17 @@ class QubeControllerNode(Node):
             '/velocity_controller/commands',
             10)
 
-        self.get_logger().info('Qube Controller Node started')
-
     def publish_command(self, control_signal):
-        """Publish command to the velocity controller"""
         # Create msg
         cmd_msg = Float64MultiArray()
         cmd_msg.data = [float(control_signal)]
 
         # Publish message
         self.velocity_pub.publish(cmd_msg)
-        self.get_logger().debug(f'Published command: {control_signal}')
 
     def joint_state_callback(self, msg):
-        """Calculate and publish commands based on angle"""
         position = msg.position[0]
         velocity = msg.velocity[0]
-
-        # Log current state
-        self.get_logger().debug(f'Position: {position}, Velocity: {velocity}')
 
         # Compute control output
         control_signal = self.pid.calculate_command(position)
@@ -122,7 +105,7 @@ class QubeControllerNode(Node):
         self.publish_command(control_signal)
 
     def parameter_callback(self, params):
-        """Update pid values and setpoint"""
+        #cUpdate pid values and setpoint
         for param in params:
             if param.name == 'setpoint':
                 self.pid.set_target(param.value)

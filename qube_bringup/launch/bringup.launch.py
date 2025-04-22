@@ -6,7 +6,6 @@ from launch.substitutions import LaunchConfiguration, Command
 from launch.actions import DeclareLaunchArgument
 from ament_index_python.packages import get_package_share_directory
 import os
-import xacro
 from launch_ros.parameter_descriptions import ParameterValue
 
 
@@ -18,28 +17,28 @@ def generate_launch_description():
     )
 
     device_arg = DeclareLaunchArgument(
-        'device', default_value='/dev/ttyUSB0',
+        'device', default_value='/dev/ttyACM0',
         description='USB device'
     )
 
     simulation_arg = DeclareLaunchArgument(
-        'simulation', default_value='False',
+        'simulation', default_value='false',
         description='Set whether the program should control simulated hardware (True) or real hardware (False)'
     )
 
     # Declare arguments for the pid controller
     kp_arg = DeclareLaunchArgument(
-        'kp', default_value='3.0',
+        'kp', default_value='8.0',
         description='Proportional gain'
     )
 
     ki_arg = DeclareLaunchArgument(
-        'ki', default_value='0.1',
+        'ki', default_value='0.2',
         description='Integral gain'
     )
 
     kd_arg = DeclareLaunchArgument(
-        'kd', default_value='0.1',
+        'kd', default_value='0.7',
         description='Derivative gain'
     )
 
