@@ -4,9 +4,10 @@ This repo contains packages for visualizing and controlling a Quanser Qube.
 ## Packages
 
 ### qube_bringup
-This package starts the PID controller as well as a digital twin of the qube. 
-If a real qube is not available, setting the launch parameter `simulation:=true` will allow control of the simulated qube alone. 
-Also launches an rqt node that enables adjusting setpoint at runtime with a slider or inserting values.
+This package starts the PID controller as well as a digital twin of the qube.  
+If a real qube is not available, setting the launch parameter `simulation:=true` will allow control of the simulated qube alone.  
+Also launches an rqt node that enables adjusting setpoint at runtime with a slider or inserting values.  
+Select 'qube_controller_node' in the rqt node to display the slider etc. 
 
 To launch use this command in the terminal:
 ```
