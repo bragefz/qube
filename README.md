@@ -24,7 +24,16 @@ The following parameters can set when launching:
 - `setpoint` (float) default:=0.0
 
 ### qube_description
-Contains the model description for the Quanser Qube.
+
+qube_description contains the model description for the Quanser Qube through the URDF model. The URDF model has been made by 2 files, one qube.macro.xacro file and a qube.urdf.xacro file. The qube.macro.xacro file contains details about the robot design with all the components, joints and materials used to make it. The qube.urdf.xacro file imports the macro and connects the robot to the world frame. To launch this and see the robot model in the RViz window use this command in the terminal:
+
+```
+
+ros2 launch qube_description view_qube.launch.py
+
+```
+
+After running this command the RViz window will open with the robot model displayed. A joint state publisher GUI window will also appear and the sliders can be used to rotate the disc. When you want to stop the visualization you can press ctrl + c in the terminal you used to run it.
 
 ### qube_controller
 This package implements a PID controller which sets the control signal based on the positional error.
