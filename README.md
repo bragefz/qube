@@ -1,6 +1,4 @@
-# Quanser Qube ROS2 Packages
-
-## Overview
+# Quanser Qube
 This repo contains packages for visualizing and controlling a Quanser Qube.
 
 ## Packages
